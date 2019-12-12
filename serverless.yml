@@ -11,10 +11,6 @@ provider:
     serverSideEncryption: AES256
     blockPublicAccess: true
 
-package:
-  individually: true
-  excludeDevDependencies: true
-
 plugins:
   - serverless-finch
 
