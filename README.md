@@ -2,6 +2,7 @@
 
 [![serverless](http://public.serverless.com/badges/v3.svg)](http://www.serverless.com)
 [![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/smoketurner/serverless-cdn/master/LICENSE)
+[![build status](https://github.com/smoketurner/serverless-cdn/workflows/Node%20CI/badge.svg)](https://github.com/smoketurner/serverless-cdn/actions?query=workflow%3A%22Node+CI%22)
 
 [Serverless](https://serverless.com) project that deploys a content delivery network (CDN) using AWS CloudFront for static assets hosted in a private S3 bucket.
 
