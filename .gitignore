@@ -1,0 +1,7 @@
+.DS_Store
+*.log
+*.pid
+.serverless
+.webpack
+node_modules
+coverage

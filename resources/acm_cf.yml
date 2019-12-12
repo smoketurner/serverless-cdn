@@ -1,0 +1,14 @@
+---
+Resources:
+  WebCertificate:
+    Type: "AWS::CertificateManager::Certificate"
+    Properties:
+      DomainName: "${self:custom.domain}"
+      SubjectAlternativeNames:
+        - "*.${self:custom.domain}"
+      ValidationMethod: DNS
+      Tags:
+        - Key: Name
+          Value: "${self:custom.domain}"
+        - Key: STAGE
+          Value: "${self:provider.stage}"

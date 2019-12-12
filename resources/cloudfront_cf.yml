@@ -1,0 +1,136 @@
+---
+Resources:
+  CloudFrontDistribution:
+    Type: "AWS::CloudFront::Distribution"
+    Properties:
+      DistributionConfig:
+        Aliases:
+          - "${self:custom.domain}"
+        CacheBehaviors:
+          - AllowedMethods:
+              - GET
+              - HEAD
+              - OPTIONS
+              - PUT
+              - PATCH
+              - POST
+              - DELETE
+            Compress: true
+            ForwardedValues:
+              Headers:
+                - Accept
+                - Authorization
+                - Content-Type
+                - Referer
+              QueryString: true
+            MaxTTL: 0
+            MinTTL: 0
+            DefaultTTL: 0
+            PathPattern: "${self:custom.api.path}*"
+            TargetOriginId: api
+            ViewerProtocolPolicy: https-only
+        CustomErrorResponses:
+          - ErrorCachingMinTTL: 0
+            ErrorCode: 403
+            ResponseCode: 404
+            ResponsePagePath: "/index.html"
+          - ErrorCachingMinTTL: 0
+            ErrorCode: 404
+            ResponseCode: 404
+            ResponsePagePath: "/index.html"
+        DefaultCacheBehavior:
+          AllowedMethods:
+            - GET
+            - HEAD
+          Compress: true
+          ForwardedValues:
+            QueryString: false
+          TargetOriginId: s3
+          ViewerProtocolPolicy: redirect-to-https
+        DefaultRootObject: "index.html"
+        Enabled: true
+        HttpVersion: http2
+        IPV6Enabled: true
+        Logging:
+          Bucket:
+            "Fn::GetAtt":
+              - LogBucket
+              - DomainName
+          IncludeCookies: false
+          Prefix: "CloudFront/"
+        Origins:
+          - Id: api
+            DomainName: "${self:custom.api.domain}"
+            OriginPath: "${self:custom.api.originPath}"
+            OriginCustomHeaders:
+              - HeaderName: "x-api-key"
+                HeaderValue: "${self:custom.api.key}"
+            CustomOriginConfig:
+              OriginProtocolPolicy: https-only
+              OriginSSLProtocols:
+                - "TLSv1.2"
+          - Id: s3
+            DomainName:
+              "Fn::GetAtt":
+                - WebBucket
+                - DomainName
+            S3OriginConfig:
+              OriginAccessIdentity:
+                "Fn::Join":
+                  - "/"
+                  - - "origin-access-identity"
+                    - cloudfront
+                    - Ref: CloudFrontWebAccess
+        PriceClass: PriceClass_100
+        ViewerCertificate:
+          AcmCertificateArn:
+            Ref: WebCertificate
+          MinimumProtocolVersion: TLSv1.2_2018
+          SslSupportMethod: sni-only
+      Tags:
+        - Key: STAGE
+          Value: "${self:provider.stage}"
+
+  RedirectCloudFrontDistribution:
+    Type: "AWS::CloudFront::Distribution"
+    Properties:
+      DistributionConfig:
+        Aliases:
+          - "www.${self:custom.domain}"
+        DefaultCacheBehavior:
+          AllowedMethods:
+            - GET
+            - HEAD
+          Compress: true
+          ForwardedValues:
+            QueryString: false
+          TargetOriginId: s3
+          ViewerProtocolPolicy: redirect-to-https
+        Enabled: true
+        HttpVersion: http2
+        IPV6Enabled: true
+        Origins:
+          - Id: s3
+            DomainName:
+              "Fn::Join":
+                - "."
+                - - Ref: RedirectBucket
+                  - "s3-website-${self:provider.region}"
+                  - "amazonaws.com"
+            CustomOriginConfig:
+              OriginProtocolPolicy: http-only # private bucket access only works over HTTP
+        PriceClass: PriceClass_100
+        ViewerCertificate:
+          AcmCertificateArn:
+            Ref: WebCertificate
+          MinimumProtocolVersion: TLSv1.2_2018
+          SslSupportMethod: sni-only
+      Tags:
+        - Key: STAGE
+          Value: "${self:provider.stage}"
+
+  CloudFrontWebAccess:
+    Type: "AWS::CloudFront::CloudFrontOriginAccessIdentity"
+    Properties:
+      CloudFrontOriginAccessIdentityConfig:
+        Comment: "CloudFront Access to ${self:custom.domain}"

@@ -1,0 +1,8 @@
+.git
+.serverless
+.webpack
+coverage
+mapping-templates
+node_modules
+package-lock.json
+resources

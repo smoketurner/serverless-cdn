@@ -1,0 +1,52 @@
+service: serverless-cdn
+
+provider:
+  name: aws
+  runtime: nodejs10.x
+  stage: ${opt:stage, 'dev'}
+  region: us-east-1
+  versionFunctions: false
+  logRetentionInDays: 1
+  deploymentBucket:
+    serverSideEncryption: AES256
+    blockPublicAccess: true
+
+package:
+  individually: true
+  excludeDevDependencies: true
+
+custom:
+  hostedZoneId: TBD # Route53 HostedZoneId for domain
+  domain: "example.com"
+  api:
+    domain: "api.${self:custom.domain}" # origin domain for an API
+    path: "/api" # path from domain to route to api
+    originPath: "/${self:provider.stage}" # origin path for API
+    key: TBD # API key from origin
+
+functions:
+  defaultIndex:
+    name: "${self:service}-${self:provider.stage}-defaultIndex"
+    handler: functions/default_index
+    description: CloudFront Origin Request Default Index Handler
+    timeout: 1 # seconds
+    memorySize: 128 # megabytes
+    events:
+      - cloudFront:
+          eventType: origin-request
+
+  webSecurity:
+    name: "${self:service}-${self:provider.stage}-webSecurity"
+    handler: functions/web_security
+    description: CloudFront Origin Response Web Security Handler
+    timeout: 1 # seconds
+    memorySize: 128 # megabytes
+    events:
+      - cloudFront:
+          eventType: origin-response
+
+resources:
+  - ${file(resources/acm_cf.yml)}
+  - ${file(resources/cloudfront_cf.yml)}
+  - ${file(resources/route53_cf.yml)}
+  - ${file(resources/s3_cf.yml)}

@@ -1,0 +1,95 @@
+---
+Resources:
+  LogBucket:
+    Type: "AWS::S3::Bucket"
+    Properties:
+      AccessControl: LogDeliveryWrite
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      Tags:
+        - Key: Name
+          Value:
+            "Fn::Join":
+              - " "
+              - - Ref: "AWS::StackName"
+                - "Logs"
+
+  WebBucket:
+    Type: "AWS::S3::Bucket"
+    Properties:
+      AccessControl: Private
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      BucketName: ${self:custom.domain}
+      LoggingConfiguration:
+        DestinationBucketName:
+          Ref: LogBucket
+        LogFilePrefix: "S3/"
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      Tags:
+        - Key: Name
+          Value:
+            "Fn::Join":
+              - " "
+              - - Ref: "AWS::StackName"
+                - "Web"
+
+  WebBucketPolicy:
+    Type: "AWS::S3::BucketPolicy"
+    Properties:
+      Bucket:
+        Ref: WebBucket
+      PolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              CanonicalUser:
+                "Fn::GetAtt":
+                  - CloudFrontWebAccess
+                  - S3CanonicalUserId
+            Action: "s3:GetObject"
+            Resource:
+              "Fn::Join":
+                - ""
+                - - "arn:aws:s3:::"
+                  - Ref: WebBucket
+                  - "/*"
+
+  RedirectBucket:
+    Type: "AWS::S3::Bucket"
+    Properties:
+      AccessControl: Private
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      WebsiteConfiguration:
+        RedirectAllRequestsTo:
+          HostName:
+            Ref: WebBucket
+          Protocol: https
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      Tags:
+        - Key: Name
+          Value:
+            "Fn::Join":
+              - " "
+              - - Ref: "AWS::StackName"
+                - "Redirect"
