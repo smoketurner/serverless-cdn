@@ -15,18 +15,38 @@ package:
   individually: true
   excludeDevDependencies: true
 
+plugins:
+  - serverless-finch
+
 custom:
   hostedZoneId: TBD # Route53 HostedZoneId for domain
-  domain: "example.com"
+  domain: 'example.com'
   api:
-    domain: "api.${self:custom.domain}" # origin domain for an API
-    path: "/api" # path from domain to route to api
-    originPath: "/${self:provider.stage}" # origin path for API
+    domain: 'api.${self:custom.domain}' # origin domain for an API
+    path: '/api' # path from domain to route to api
+    originPath: '/${self:provider.stage}' # origin path for API
     key: TBD # API key from origin
+  client:
+    bucketName: '${self:custom.domain}'
+    distributionFolder: dist
+    indexDocument: 'index.html'
+    errorDocument: 'index.html'
+    manageResources: false
+    objectHeaders:
+      ALL_OBJECTS:
+        - name: 'Cache-Control'
+          value: 'max-age=86400'
+      'index.html':
+        - name: 'Cache-Control'
+          value: 'no-cache,no-store,must-revalidate,max-age=0'
+    sse: AES256
+    uploadOrder:
+      - .*
+      - index\.html
 
 functions:
   defaultIndex:
-    name: "${self:service}-${self:provider.stage}-defaultIndex"
+    name: '${self:service}-${self:provider.stage}-defaultIndex'
     handler: functions/default_index
     description: CloudFront Origin Request Default Index Handler
     timeout: 1 # seconds
@@ -36,7 +56,7 @@ functions:
           eventType: origin-request
 
   webSecurity:
-    name: "${self:service}-${self:provider.stage}-webSecurity"
+    name: '${self:service}-${self:provider.stage}-webSecurity'
     handler: functions/web_security
     description: CloudFront Origin Response Web Security Handler
     timeout: 1 # seconds

@@ -3,6 +3,7 @@
   "private": true,
   "scripts": {
     "deploy": "sls deploy --force -v",
+    "client-deploy": "sls client deploy --no-delete-contents --no-config-change --no-policy-change --no-cors-change --no-confirm",
     "remove": "sls remove -v",
     "test": "jest --coverage"
   },
@@ -17,6 +18,7 @@
     "lambda-wrapper": "0.3.0",
     "prettier": "1.19.1",
     "serverless": "1.59.3",
+    "serverless-finch": "2.5.2",
     "serverless-webpack": "5.3.1",
     "webpack": "4.41.2",
     "webpack-node-externals": "1.7.2"

@@ -40,7 +40,10 @@ npm test
 
 ```
 npm run deploy
+npm run client-deploy # deploy sample hello world from dist folder
 ```
+
+You can either put your static assets into the `dist` folder and run `npm run client-deploy` to upload them to the S3 bucket, or upload files directly to the `<domain>` S3 bucket. Route53 and CloudFront will take care of any redirections and content serving for you.
 
 ## Removal
 
