@@ -35,10 +35,14 @@ custom:
     objectHeaders:
       ALL_OBJECTS:
         - name: 'Cache-Control'
-          value: 'max-age=86400'
-      'index.html':
+          value: 'max-age=2628000, public' # 1 month in seconds
+      'index.html': # https://stackoverflow.com/a/2068407
         - name: 'Cache-Control'
-          value: 'no-cache,no-store,must-revalidate,max-age=0'
+          value: 'no-cache, no-store, must-revalidate, max-age=0'
+        - name: Pragma
+          value: 'no-cache'
+        - name: Expires
+          value: '0'
     sse: AES256
     uploadOrder:
       - .*
