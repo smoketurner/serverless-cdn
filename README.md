@@ -3,7 +3,7 @@
 [![serverless](http://public.serverless.com/badges/v3.svg)](http://www.serverless.com)
 [![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/smoketurner/serverless-cdn/master/LICENSE)
 
-[Serverless](https://serverless.com) project that deploys a content delivery network (CDN) using AWS CloudFront for static assets hosted in an S3 bucket.
+[Serverless](https://serverless.com) project that deploys a content delivery network (CDN) using AWS CloudFront for static assets hosted in a private S3 bucket.
 
 This projects creates the following resources:
 
