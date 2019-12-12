@@ -47,3 +47,8 @@ npm run deploy
 ```
 npm run remove
 ```
+
+## References
+
+- https://www.awsadvent.com/2018/12/03/vanquishing-cors-with-cloudfront-and-lambdaedge/
+- https://medium.com/faun/hardening-the-http-security-headers-with-aws-lambda-edge-and-cloudfront-2e2da1ae4d83
