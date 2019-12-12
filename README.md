@@ -8,8 +8,8 @@
 This projects creates the following resources:
 
 - `AWS::CertificateManager::Certificate` - `*.<domain>` SSL certificate
-- `AWS::CloudFront::Distribution` - `[http|https]://<domain>` distribtion
-- `AWS::CloudFront::Distribution` - redirect `[http|https]://www.<domain>` to `https://<domain>` distribution
+- `AWS::CloudFront::Distribution` - `[http|https]://<domain>` distribution
+- `AWS::CloudFront::Distribution` - `[http|https]://www.<domain>` redirect distribution
 - `AWS::CloudFront::CloudFrontOriginAccessIdentity`
 - `AWS::Route53::RecordSet` - `<domain>` IPv4 DNS entry
 - `AWS::Route53::RecordSet` - `<domain>` IPv6 DNS entry
@@ -17,8 +17,10 @@ This projects creates the following resources:
 - `AWS::Route53::RecordSet` - `www.<domain>` IPv6 DNS entry
 - `AWS::S3::Bucket` - access log bucket
 - `AWS::S3::Bucket` - static asset bucket
-- `AWS::S3::Bucket` - redirect bucket
+- `AWS::S3::Bucket` - bucket to redirect requests to `https://<domain>`
 - `AWS::S3::BucketPolicy` - only allow CloudFront to access static asset bucket
+- `AWS::Lambda::Function` - Lambda@Edge function for single page applications to redirect requests to `/index.html`
+- `AWS::Lambda::Function` - Lambda@Edge function to add various web security HTTP response headers
 
 ## Installation
 
