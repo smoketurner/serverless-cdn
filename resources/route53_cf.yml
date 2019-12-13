@@ -10,8 +10,8 @@ Resources:
             - DomainName
         EvaluateTargetHealth: false
         HostedZoneId: Z2FDTNDATAQYW2 # CloudFront hosted zone ID
-      HostedZoneId: ${self:custom.hostedZoneId}
-      Name: "${self:custom.domain}"
+      HostedZoneId: ${self:custom.config.hostedZoneId}
+      Name: "${self:custom.config.domain}"
       Type: A
 
   WebIPV6RecordSet:
@@ -24,8 +24,8 @@ Resources:
             - DomainName
         EvaluateTargetHealth: false
         HostedZoneId: Z2FDTNDATAQYW2 # CloudFront hosted zone ID
-      HostedZoneId: "${self:custom.hostedZoneId}"
-      Name: "${self:custom.domain}"
+      HostedZoneId: "${self:custom.config.hostedZoneId}"
+      Name: "${self:custom.config.domain}"
       Type: AAAA
 
   RedirectRecordSet:
@@ -38,8 +38,8 @@ Resources:
             - DomainName
         EvaluateTargetHealth: false
         HostedZoneId: Z2FDTNDATAQYW2 # CloudFront hosted zone ID
-      HostedZoneId: ${self:custom.hostedZoneId}
-      Name: "www.${self:custom.domain}"
+      HostedZoneId: ${self:custom.config.hostedZoneId}
+      Name: "www.${self:custom.config.domain}"
       Type: A
 
   RedirectIPV6RecordSet:
@@ -52,6 +52,6 @@ Resources:
             - DomainName
         EvaluateTargetHealth: false
         HostedZoneId: Z2FDTNDATAQYW2 # CloudFront hosted zone ID
-      HostedZoneId: ${self:custom.hostedZoneId}
-      Name: "www.${self:custom.domain}"
+      HostedZoneId: ${self:custom.config.hostedZoneId}
+      Name: "www.${self:custom.config.domain}"
       Type: AAAA

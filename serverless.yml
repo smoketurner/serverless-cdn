@@ -6,10 +6,11 @@ provider:
   stage: ${opt:stage, 'dev'}
   region: us-east-1
   versionFunctions: false
-  logRetentionInDays: 1
+  logRetentionInDays: 3
   deploymentBucket:
     serverSideEncryption: AES256
     blockPublicAccess: true
+  stackTags: ${self:custom.config.tags}
 
 package:
   individually: true
@@ -17,17 +18,12 @@ package:
 
 plugins:
   - serverless-finch
+  - serverless-webpack
 
 custom:
-  hostedZoneId: TBD # Route53 HostedZoneId for domain
-  domain: 'example.com'
-  api:
-    domain: 'api.${self:custom.domain}' # origin domain for an API
-    path: '/api' # path from domain to route to api
-    originPath: '/${self:provider.stage}' # origin path for API
-    key: TBD # API key from origin
+  config: ${file(./stages/${self:provider.stage}.yml)}
   client:
-    bucketName: '${self:custom.domain}'
+    bucketName: '${self:custom.config.domain}'
     distributionFolder: dist
     indexDocument: 'index.html'
     errorDocument: 'index.html'
@@ -47,12 +43,17 @@ custom:
     uploadOrder:
       - .*
       - index\.html
+  webpack:
+    includeModules:
+      forceExclude:
+        - aws-sdk
+    packager: npm
 
 functions:
   defaultIndex:
-    name: '${self:service}-${self:provider.stage}-defaultIndex'
-    handler: functions/default_index
-    description: CloudFront Origin Request Default Index Handler
+    name: '${self:service}-${self:provider.stage}-origin-request-defaultIndex'
+    handler: functions/default_index.handler
+    description: CloudFront origin-request default index handler
     timeout: 1 # seconds
     memorySize: 128 # megabytes
     events:
@@ -60,9 +61,9 @@ functions:
           eventType: origin-request
 
   webSecurity:
-    name: '${self:service}-${self:provider.stage}-webSecurity'
-    handler: functions/web_security
-    description: CloudFront Origin Response Web Security Handler
+    name: '${self:service}-${self:provider.stage}-origin-response-webSecurity'
+    handler: functions/web_security.handler
+    description: CloudFront origin-response web security handler
     timeout: 1 # seconds
     memorySize: 128 # megabytes
     events:

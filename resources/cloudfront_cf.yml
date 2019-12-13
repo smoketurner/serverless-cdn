@@ -5,7 +5,7 @@ Resources:
     Properties:
       DistributionConfig:
         Aliases:
-          - "${self:custom.domain}"
+          - "${self:custom.config.domain}"
         CacheBehaviors:
           - AllowedMethods:
               - GET
@@ -26,7 +26,7 @@ Resources:
             MaxTTL: 0
             MinTTL: 0
             DefaultTTL: 0
-            PathPattern: "${self:custom.api.path}*"
+            PathPattern: "${self:custom.config.api.path}*"
             TargetOriginId: api
             ViewerProtocolPolicy: https-only
         CustomErrorResponses:
@@ -60,11 +60,11 @@ Resources:
           Prefix: "CloudFront/"
         Origins:
           - Id: api
-            DomainName: "${self:custom.api.domain}"
-            OriginPath: "${self:custom.api.originPath}"
+            DomainName: "${self:custom.config.api.domain}"
+            OriginPath: "${self:custom.config.api.originPath}"
             OriginCustomHeaders:
               - HeaderName: "x-api-key"
-                HeaderValue: "${self:custom.api.key}"
+                HeaderValue: "${self:custom.config.api.key}"
             CustomOriginConfig:
               OriginProtocolPolicy: https-only
               OriginSSLProtocols:
@@ -96,7 +96,7 @@ Resources:
     Properties:
       DistributionConfig:
         Aliases:
-          - "www.${self:custom.domain}"
+          - "www.${self:custom.config.domain}"
         DefaultCacheBehavior:
           AllowedMethods:
             - GET
@@ -133,4 +133,4 @@ Resources:
     Type: "AWS::CloudFront::CloudFrontOriginAccessIdentity"
     Properties:
       CloudFrontOriginAccessIdentityConfig:
-        Comment: "CloudFront Access to ${self:custom.domain}"
+        Comment: "CloudFront Access to ${self:custom.config.domain}"

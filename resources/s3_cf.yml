@@ -29,7 +29,7 @@ Resources:
         ServerSideEncryptionConfiguration:
           - ServerSideEncryptionByDefault:
               SSEAlgorithm: AES256
-      BucketName: ${self:custom.domain}
+      BucketName: ${self:custom.config.domain}
       LoggingConfiguration:
         DestinationBucketName:
           Ref: LogBucket

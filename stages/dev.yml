@@ -1,0 +1,19 @@
+domain: dev.example.com
+hostedZoneId: TBD # Route53 HostedZoneId for domain
+
+# ex. https://dev.example.com/api -> https://api.dev.example.com/dev/api
+api:
+  # origin domain for an API
+  domain: 'api.dev.example.com'
+
+  # path from domain to route to api
+  path: '/api'
+
+  # origin path for API
+  originPath: '/dev'
+
+  # CloudFront will send key as an x-api-key header to origin
+  key: TBD
+
+tags:
+  tag1: value1
