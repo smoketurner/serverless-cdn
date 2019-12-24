@@ -6,7 +6,7 @@
 
 [Serverless](https://serverless.com) project that deploys a content delivery network (CDN) using AWS CloudFront for static assets hosted in a private S3 bucket.
 
-This projects creates the following resources:
+This project creates the following resources:
 
 - `AWS::CertificateManager::Certificate` - `*.<domain>` SSL certificate
 - `AWS::CloudFront::Distribution` - `[http|https]://<domain>` distribution
